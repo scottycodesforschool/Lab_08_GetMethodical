@@ -3,8 +3,8 @@ import java.util.Scanner; // Import the Scanner class for input
 /**
  * DevTest.java
  * This class serves as a development and testing ground for the static methods
- * in the SafeInput library. Each method will be coded and tested here
- * before being moved to the SafeInput.java file.
+ * in the SafeInput library. All SafeInput methods are called directly from
+ * the SafeInput.java file, demonstrating their usage.
  */
 public class DevTest {
     public static void main(String[] args) {
@@ -52,54 +52,36 @@ public class DevTest {
 
         // --- Test Case for getRegExString ---
         System.out.println("--- Testing getRegExString ---");
-        // For development, we'll place the getRegExString method directly in DevTest first.
-        // Once tested, it will be moved to SafeInput.java.
-
-        // Test with a Social Security Number pattern (###-##-####)
-        String ssnPattern = "\\d{3}-\\d{2}-\\d{4}";
-        String ssn = getRegExString(in, "Enter your Social Security Number (###-##-####)", ssnPattern);
+        String ssnPattern = "^\\d{3}-\\d{2}-\\d{4}$";
+        String ssn = SafeInput.getRegExString(in, "Enter your Social Security Number (###-##-####)", ssnPattern);
         System.out.println("You entered SSN: " + ssn);
 
-        // Test with a Capital M number pattern (M########)
-        String mNumPattern = "[Mm]\\d{8}";
-        String mNumber = getRegExString(in, "Enter your M Number (M########)", mNumPattern);
+        String mNumPattern = "^[Mm]\\d{5}$";
+        String mNumber = SafeInput.getRegExString(in, "Enter your M Number (Mxxxxx or mxxxxx)", mNumPattern);
         System.out.println("You entered M Number: " + mNumber);
 
-        // Test with a simple date pattern (MM/DD/YYYY)
-        String datePattern = "\\d{2}/\\d{2}/\\d{4}";
-        String date = getRegExString(in, "Enter a date (MM/DD/YYYY)", datePattern);
-        System.out.println("You entered date: " + date);
-
+        String menuRegEx = "^[OoSsVvQq]$";
+        String menuChoice = SafeInput.getRegExString(in, "Enter your menu choice (O, S, V, Q)", menuRegEx);
+        System.out.println("Valid menu choice entered: " + menuChoice);
         System.out.println("--- End of getRegExString Test ---\n");
+
+        // --- Test Case for prettyHeader ---
+        System.out.println("--- Testing prettyHeader ---");
+        SafeInput.prettyHeader("Message Centered Here");
+        System.out.println(); // Add a blank line for separation in output
+
+        SafeInput.prettyHeader("Hello World");
+        System.out.println(); // Add a blank line for separation in output
+
+        SafeInput.prettyHeader("A very long message that might not fit perfectly"); // Test with a longer message
+        System.out.println(); // Add a blank line for separation in output
+
+        SafeInput.prettyHeader("Short Msg"); // Test with a shorter message
+        System.out.println(); // Add a blank line for separation in output
+
+        System.out.println("--- End of prettyHeader Test ---\n");
 
         // Close the scanner when all testing is complete
         in.close();
-    }
-
-    /**
-     * Prompts the user to input a String that matches a given regular expression pattern.
-     * The method will loop until a valid string matching the pattern is entered.
-     *
-     * @param pipe   The Scanner object to read input from.
-     * @param prompt The message displayed to the user before input.
-     * @param regEx  The regular expression pattern to match.
-     * @return A String that matches the specified regular expression.
-     */
-    public static String getRegExString(Scanner pipe, String prompt, String regEx) {
-        String retString = ""; // Variable to store the user's input
-        boolean done = false;  // Flag to control the input loop
-
-        do {
-            System.out.print("\n" + prompt + ": "); // Display the prompt
-            retString = pipe.nextLine(); // Read the entire line of input
-
-            if (retString.matches(regEx)) { // Check if the input matches the regex pattern
-                done = true; // If it matches, set done to true to exit the loop
-            } else {
-                System.out.println("Invalid input: '" + retString + "'. Input must match the pattern: " + regEx);
-            }
-        } while (!done); // Continue looping until a valid string matching the regex is received
-
-        return retString; // Return the valid string
     }
 }
