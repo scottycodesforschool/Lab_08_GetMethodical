@@ -122,6 +122,44 @@ public class SafeInput {
     }
 
     /**
+     * Prompts the user for a double within a specified inclusive range.
+     * The method will loop until a valid double within the range is entered.
+     * It handles non-double input and out-of-range input, clearing the buffer.
+     *
+     * @param pipe   The Scanner object to read input from.
+     * @param prompt The message displayed to the user before input.
+     * @param low    The lower bound of the inclusive range.
+     * @param high   The upper bound of the inclusive range.
+     * @return A valid double within the specified range.
+     */
+    public static double getRangedDouble(Scanner pipe, String prompt, double low, double high) {
+        double retDouble = 0.0; // Variable to store the valid double
+        boolean done = false;   // Flag to control the input loop
+        String trash = "";      // Variable to catch invalid input
+
+        do {
+            // Append the range to the prompt
+            System.out.print("\n" + prompt + " [" + low + " - " + high + "]: ");
+            if (pipe.hasNextDouble()) { // Check if the next token is a double
+                retDouble = pipe.nextDouble(); // Read the double
+                pipe.nextLine(); // Clear the buffer (consume the newline character)
+
+                // Check if the double is within the specified range
+                if (retDouble >= low && retDouble <= high) {
+                    done = true; // Set done to true as valid input was received
+                } else {
+                    System.out.println("Input is out of range. Please enter a value between " + low + " and " + high + ".");
+                }
+            } else {
+                trash = pipe.nextLine(); // Read the invalid input as a string
+                System.out.println("Invalid input: '" + trash + "'. Please enter a valid number.");
+            }
+        } while (!done); // Continue looping until a valid double within the range is received
+
+        return retDouble; // Return the valid double
+    }
+
+    /**
      * Prompts the user for a Yes or No [Y/N] input, returning true for yes and false for no.
      * It accepts 'y', 'Y', 'n', 'N' as valid responses and loops until one of them is entered.
      *
@@ -177,5 +215,55 @@ public class SafeInput {
         } while (!done); // Continue looping until a valid string matching the regex is received
 
         return retString; // Return the valid string
+    }
+
+    /**
+     * Creates a pretty header with a centered message.
+     * The header is always 60 characters wide.
+     *
+     * @param msg The message to be centered in the header.
+     */
+    public static void prettyHeader(String msg) {
+        final int HEADER_WIDTH = 60;
+        final int ASTERISKS_PER_SIDE = 3; // Three asterisks on each side of the message
+
+        // Print the top row of asterisks
+        for (int i = 0; i < HEADER_WIDTH; i++) {
+            System.out.print("*");
+        }
+        System.out.println(); // New line after the top row
+
+        // Calculate padding for centering the message
+        // Available space for message and internal padding is HEADER_WIDTH - (2 * ASTERISKS_PER_SIDE)
+        int availableSpace = HEADER_WIDTH - (2 * ASTERISKS_PER_SIDE);
+        int msgLength = msg.length();
+
+        // Calculate left and right padding
+        int totalPadding = availableSpace - msgLength;
+        int leftPadding = totalPadding / 2;
+        int rightPadding = totalPadding - leftPadding; // Accounts for odd totalPadding
+
+        // Print the middle row
+        System.out.print("***"); // Leading asterisks
+
+        // Print left padding spaces
+        for (int i = 0; i < leftPadding; i++) {
+            System.out.print(" ");
+        }
+
+        System.out.print(msg); // Print the message
+
+        // Print right padding spaces
+        for (int i = 0; i < rightPadding; i++) {
+            System.out.print(" ");
+        }
+
+        System.out.println("***"); // Trailing asterisks
+
+        // Print the bottom row of asterisks
+        for (int i = 0; i < HEADER_WIDTH; i++) {
+            System.out.print("*");
+        }
+        System.out.println(); // New line after the bottom row
     }
 }
